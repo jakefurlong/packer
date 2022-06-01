@@ -1,2 +1,2 @@
 # packer
-All thing Packer
+All things Packer
