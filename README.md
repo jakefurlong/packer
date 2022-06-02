@@ -250,11 +250,6 @@ Build your new image.
 packer build aws-ubuntu.pkr.hcl
 ```
 
-You should get outpuit like this:
-
-![variables](./images/variables.png)
-
-
 There are two more vairable options. The first is the use of a variable file. Creat a file called `example.pkrvars.hcl` and add the following:
 
 ```
@@ -415,4 +410,7 @@ us-west-2: ami-0bb4d90f831958da4
 us-west-2: ami-0c7f91811866ac4af
 ```
 
+## Post-Processors - Vagrant
+
+The last step is to add a post-processing step to your Packer template.
 
