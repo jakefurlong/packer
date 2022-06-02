@@ -15,10 +15,12 @@ choco install packer
 
 Mine is already installed and on the latest version.
 
-![choco-install-packer](https://raw.githubusercontent.com/jakefurlong/packer/main/images/choco-install-packer.pngchoco-install-packer.png)
+![choco-install-packer](https://github.com/jakefurlong/packer/blob/03c67853c8fc8b4ef55e51c9c3789c07cefe91b5/images/choco-install-packer.png)
 
 
-YOu can also check if your package needs to be updated using `choco upgrade packer`. I usually verify it as well because sometimes Chocolately doesn't have the most recent packages, but it usually does. Still, it doesn't hurt to check (https://packer.io/downloads).
+
+
+You can also check if your package needs to be updated using `choco upgrade packer`. I usually verify it as well because sometimes Chocolately doesn't have the most recent packages, but it usually does. Still, it doesn't hurt to check (https://packer.io/downloads).
 
 Refresh your environment variables to include any installed by Packer that may not be loaded.
 
