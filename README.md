@@ -15,7 +15,7 @@ choco install packer
 
 Mine is already installed and on the latest version.
 
-![choco-install-packer](/images/choco-install-packer.png)
+![choco-install-packer](images/choco-install-packer.png)
 
 
 You can also check if your package needs to be updated using `choco upgrade packer`. I usually verify it as well because sometimes Chocolately doesn't have the most recent packages, but it usually does. Still, it doesn't hurt to check (https://packer.io/downloads).
@@ -28,7 +28,7 @@ refreshenv
 
 You should get the following output:
 
-![refreshenv](./images/refreshenv.png)
+![refreshenv](images/refreshenv.png)
 
 Verify the installation was successful with the following command.
 
@@ -38,7 +38,7 @@ packer
 
 You should get output like this (I switched from PowerShell to VSCode from this point on):
 
-![packer](./images/packer.png)
+![packer](images/packer.png)
 
 You have successfully installed Packer on your PC.
 
@@ -109,7 +109,7 @@ packer fmt .
 packer validate .
 ```
 
-![packer format and validate](./images/packer-format-validate.png)
+![packer format and validate](images/packer-format-validate.png)
 
 This will fix any formatting inconsistencies and validate the configuration of your template.
 
@@ -121,7 +121,7 @@ packer build aws-ubuntu-pkr.hcl
 
 You should see it start to build your AMI and get confirmation like this:
 
-![build](./images/build.png)
+![build](images/build.png)
 
 You can now check your AMI using the AWS CLI or AWS Management Console. 
 
@@ -217,7 +217,7 @@ packer build aws-ubuntu.pkr.hcl
 
 You should get output similar to this:
 
-![more provisioners](./images/more-provisioners.png)
+![more provisioners](images/more-provisioners.png)
 
 ## Variables
 
@@ -265,7 +265,7 @@ packer build --var-file=example.pkrvars.hcl aws-ubuntu.pkr.hcl
 
 You can see that Packer read the var file here:
 
-![var file](./images/var-file.png)
+![var file](images/var-file.png)
 
 Packer will also automatically load any variable file that matches the name `*.auto.pkrvars.hcl` without passing a parameter via the command line. You can try this by renaming the variable file.
 
@@ -396,7 +396,7 @@ packer build .
 
 Notice it's building two images.
 
-![parallel](./images/parallel.png)
+![parallel](images/parallel.png)
 
 And now it's finished.
 
@@ -479,13 +479,13 @@ Log in to the AWS management console and delete all of the AMIs and Snapshots.
 
 Here's a list of the AMIs I created (look for AMIs under the Images section on the left side of the EC2 console):
 
-![ami](./images/ami.png)
+![ami](images/ami.png)
 
 Select all of the AMIs, click the Actions drop down icon and select Deregister AMI. Notice you get a pop-up window that says you have to delete the snapshots separately.
 
 I *really* wish Packer could do this for us...
 
-![deregister](./images/deregister.png)
+![deregister](images/deregister.png)
 
 After clicking the orange Deregister button you should see a message "You do not have any images in this Region." You might want to check your default region as well, as these were built in us-west-2 but I had a one-off AMI in us-east-1 as that is my default Region.
 
@@ -493,11 +493,11 @@ Now select Snapshots from the Elastic Block Store Section in the EC2 console.
 
 You should have the same number of snapshots as you had AMIs
 
-![snapshots](./images/snapshots.png)
+![snapshots](images/snapshots.png)
 
 Select all the snaphots, click the Action drop down button, and select delete snapshots.
 
-![delete-snapshots](./images/delete-snapshots.png)
+![delete-snapshots](images/delete-snapshots.png)
 
 Type delete and click the orange Delete button. You should now have a message that says "You currently have no snapshots in this Region." Again, check your default Region (mine is us-east-1) to delete any snapshots there as well.
 
