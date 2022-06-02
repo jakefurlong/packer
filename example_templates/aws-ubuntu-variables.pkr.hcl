@@ -1,7 +1,7 @@
 packer {
   required_plugins {
     amazon = {
-      version = ">= 0.0.1"
+      version = ">= 0.0.2"
       source  = "github.com/hashicorp/amazon"
     }
   }
@@ -15,6 +15,7 @@ variable "ami_prefix" {
 locals {
   timestamp = regex_replace(timestamp(), "[- TZ:]", "")
 }
+
 
 source "amazon-ebs" "ubuntu" {
   ami_name      = "${var.ami_prefix}-${local.timestamp}"
@@ -32,28 +33,10 @@ source "amazon-ebs" "ubuntu" {
   ssh_username = "ubuntu"
 }
 
-source "amazon-ebs" "ubuntu-focal" {
-  ami_name      = "${var.ami_prefix}-focal-${local.timestamp}"
-  instance_type = "t2.micro"
-  region        = "us-west-2"
-  source_ami_filter {
-    filters = {
-      name                = "ubuntu/images/*ubuntu-focal-20.04-amd64-server-*"
-      root-device-type    = "ebs"
-      virtualization-type = "hvm"
-    }
-    most_recent = true
-    owners      = ["099720109477"]
-  }
-  ssh_username = "ubuntu"
-}
-
-
 build {
-  name    = "learn-packer"
+  name = "learn-packer"
   sources = [
-    "source.amazon-ebs.ubuntu",
-    "source.amazon-ebs.ubuntu-focal"
+    "source.amazon-ebs.ubuntu"
   ]
 
   provisioner "shell" {
@@ -73,3 +56,4 @@ build {
     inline = ["echo This provisioner runs last"]
   }
 }
+
