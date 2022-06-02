@@ -414,3 +414,91 @@ us-west-2: ami-0c7f91811866ac4af
 
 The last step is to add a post-processing step to your Packer template.
 
+Using the template you used last, you can add the following post-processor block inside the build block but after the provisioner step. These post-processor blocks will tag each image with the appropriate tags.
+
+```
+post-processor "vagrant" {}
+```
+
+It should look like this:
+
+```
+build {
+  name    = "learn-packer"
+  sources = [
+    "source.amazon-ebs.ubuntu",
+    "source.amazon-ebs.ubuntu-focal"
+  ]
+
+  provisioner "shell" {
+    environment_vars = [
+      "FOO=hello world",
+    ]
+    inline = [
+      "echo Installing Redis",
+      "sleep 30",
+      "sudo apt-get update",
+      "sudo apt-get install -y redis-server",
+      "echo \"FOO is $FOO\" > example.txt",
+    ]
+  }
+
+  provisioner "shell" {
+    inline = ["echo This provisioner runs last"]
+  }
+
+  post-processor "vagrant" {}
+}
+```
+
+Build your image and then list the files in your current directory. You should find Vagrant box files.
+
+```
+packer build .
+
+ls -l
+```
+
+You can add as many post-processors as you want, but each one will start from the *original* artifact output by the builder, not the artifact created by a previously-declared post-processor. If you want to do that you have to use `post-processors` (plural) to make the output of one post-processor the input of another post-processor. For example, you could use the vagrant box files as an output from the first to then pass as input to compress them with a second.
+
+```
+post-processors {
+  post-processor "vagrant" {}
+  post-processor "compress" {}
+}
+```
+
+## Clean Up
+
+By now, you've probably created a whole bunch of AMI and Snapshots in your AWS account. 
+
+**At this time I am telling you to delete them all so you don't get billed for the storage utilization.**
+
+Log in to the AWS management console and delete all of the AMIs and Snapshots.
+
+Here's a list of the AMIs I created (look for AMIs under the Images section on the left side of the EC2 console):
+
+![ami](./images/ami.png)
+
+Select all of the AMIs, click the Actions drop down icon and select Deregister AMI. Notice you get a pop-up window that says you have to delete the snapshots separately.
+
+I *really* wish Packer could do this for us...
+
+![deregister](./images/deregister.png)
+
+After clicking the orange Deregister button you should see a message "You do not have any images in this Region." You might want to check your default region as well, as these were built in us-west-2 but I had a one-off AMI in us-east-1 as that is my default Region.
+
+Now select Snapshots from the Elastic Block Store Section in the EC2 console.
+
+You should have the same number of snapshots as you had AMIs
+
+![snapshots](./images/snapshots.png)
+
+Select all the snaphots, click the Action drop down button, and select delete snapshots.
+
+![delete-snapshots](./images/delete-snapshots.png)
+
+Type delete and click the orange Delete button. You should now have a message that says "You currently have no snapshots in this Region." Again, check your default Region (mine is us-east-1) to delete any snapshots there as well.
+
+You have now complete the clean up section and thus, the all of the Packer tutorials!
+

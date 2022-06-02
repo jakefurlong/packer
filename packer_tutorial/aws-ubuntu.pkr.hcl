@@ -72,4 +72,5 @@ build {
   provisioner "shell" {
     inline = ["echo This provisioner runs last"]
   }
+  post-processor "vagrant" {}
 }
