@@ -91,7 +91,7 @@ build {
 }
 ```
 
-This template will create an AWS AMI from an EC2 Instance with the properties shown in the template. It uses the amazon plug-in with an EC2 Instance as the source to build an AMI named "learn-packer."
+This template will create an AWS AMI from an EC2 Instance with the properties shown in the template. It uses the amazon plug-in with an EC2 Instance as the source to build an AMI named "learn-packer-linux-aws."
 
 Next, initialize Packer within the packer_tutorial directory.
 
@@ -125,3 +125,97 @@ You should see it start to build your AMI and get confirmation like this:
 You can now check your AMI using the AWS CLI or AWS Management Console. 
 
 IMPORTANT! Packer does not manage your AMIs. SO if you need to delete them or any snapshots, make sure you do so on your own!!!
+
+## Provisioner
+
+Add the following code to your Packer template in the build block underneath sources:
+
+```
+provisioner "shell" {
+  environment_vars = [
+    "FOO=hello world",
+  ]
+  inline = [
+    "echo Installing Redis",
+    "sleep 30",
+    "sudo apt-get update",
+    "sudo apt-get install -y redis-server",
+    "echo \"FOO is $FOO\" > example.txt",
+  ]
+}
+```
+
+
+
+Do a quick format and validate.
+
+```
+packer fmt .
+packer validate .
+```
+
+AMI names must be unique, so you have to update the AMI name before building the image. I updated my name in the source block like this:
+
+```
+source "amazon-ebs" "ubuntu" {
+  ami_name      = "learn-packer-linux-aws-redis"
+```
+
+Build the new Packer image with the added provisioner.
+
+```
+packer build aws-ubuntu.pkr.hcl
+```
+
+You should get output similar to this:
+
+![provisioner](images/provisioner.png)
+
+Now you can try adding more provisioners (again, with an updated name).
+
+Name change:
+
+```
+source "amazon-ebs" "ubuntu" {
+  ami_name      = "learn-packer-linux-aws-redis-msg"
+```
+
+And new build block:
+
+```
+build {
+  name    = "learn-packer"
+  sources = [
+    "source.amazon-ebs.ubuntu"
+  ]
+
+  provisioner "shell" {
+    environment_vars = [
+      "FOO=hello world",
+    ]
+    inline = [
+      "echo Installing Redis",
+      "sleep 30",
+      "sudo apt-get update",
+      "sudo apt-get install -y redis-server",
+      "echo \"FOO is $FOO\" > example.txt",
+    ]
+  }
+
+  provisioner "shell" {
+    inline = ["echo This provisioner runs last"]
+  }
+}
+```
+
+Build the new image.
+
+```
+packer build aws-ubuntu.pkr.hcl
+```
+
+You should get output similar to this:
+
+![more provisioners](./images/more-provisioners.png)
+
+CLEAN UP!!! Check your AMIs and Snapshots in your AWS account.
